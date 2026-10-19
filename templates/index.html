@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机名言警句生成器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "PingFang SC", "Microsoft Yahei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        .tag-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 25px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .tag-select:focus {
+            border-color: #667eea;
+        }
+        .quote-card {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 35px 25px;
+            margin-bottom: 30px;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .quote-content {
+            font-size: 22px;
+            line-height: 1.8;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .quote-meta {
+            text-align: right;
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        .refresh-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ 随机名言警句生成器</h1>
+        <select class="tag-select" id="tagSelect">
+            <option value="">全部标签</option>
+        </select>
+        <div class="quote-card" id="quoteCard">
+            <div class="quote-content" id="quoteContent">点击下方按钮生成第一条名言吧~</div>
+            <div class="quote-meta" id="quoteMeta"></div>
+        </div>
+        <button class="refresh-btn" id="refreshBtn">换一条新名言</button>
+    </div>
+
+    <script>
+        // 页面加载时先获取所有标签
+        window.onload = async function() {
+            const res = await fetch('/api/tags');
+            const result = await res.json();
+            const tagSelect = document.getElementById('tagSelect');
+            result.data.forEach(tag => {
+                const option = document.createElement('option');
+                option.value = tag;
+                option.innerText = tag;
+                tagSelect.appendChild(option);
+            });
+        }
+
+        // 点击按钮刷新名言
+        document.getElementById('refreshBtn').addEventListener('click', async function() {
+            const tag = document.getElementById('tagSelect').value;
+            const res = await fetch(`/api/random-quote?tag=${tag}`);
+            const result = await res.json();
+            if (result.code === 200) {
+                document.getElementById('quoteContent').innerText = `「${result.data.content}」`;
+                document.getElementById('quoteMeta').innerText = `—— ${result.data.author} 【${result.data.tag}】`;
+            } else {
+                alert(result.msg);
+            }
+        })
+    </script>
+</body>
+</html>
