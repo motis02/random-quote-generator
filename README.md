@@ -15,7 +15,7 @@ Generate random aphorisms and quotes
 - 🔌 代码结构清晰，方便二次开发接入API、网页端等场景
 
 ## 快速开始
-1. 克隆项目到本地
+ 克隆项目到本地
 ```bash
 git clone https://github.com/你的用户名/random-quote-generator.git
 cd random-quote-generator
@@ -49,7 +49,7 @@ generator.add_quote(
  
 
 ## 网页端使用
-1. 先安装依赖
+先安装依赖
 ```bash
 pip install -r requirements.txt
  
